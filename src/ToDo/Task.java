@@ -1,9 +1,7 @@
-package sample;
+package ToDo;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
-import java.time.LocalTime;
 
 public class Task {
 
