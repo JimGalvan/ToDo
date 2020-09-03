@@ -12,11 +12,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.util.ArrayList;
+
 public class ToDoController {
 
 	DataManager dataManager;
 
 	ObservableList<Task> observableList;
+
+	ArrayList<Task> taskArrayList;
 
 	@FXML
 	private JFXTimePicker timer;
@@ -42,8 +46,7 @@ public class ToDoController {
 	public void initialize() {
 
 		dataManager = new DataManager();
-
-//		dataManager.loadData(listView);
+		taskArrayList = new ArrayList<>();
 
 		// Set up the columns in the table
 		taskColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
@@ -51,53 +54,42 @@ public class ToDoController {
 
 		observableList = FXCollections.observableArrayList();
 
-		// Load data
-
+		dataManager.loadData(taskArrayList);
+		observableList.setAll(taskArrayList);
+		tableView.setItems(observableList);
 	}
 
 	@FXML
 	void addTask(ActionEvent event) {
-
-		boolean value = tableView.getItems().toString().contains(taskBox.getText());
 		String timeValue = (timer.getValue() != null ? timer.getValue().toString() : "");
 
-		if (value)
+		if (tableView.getItems().toString().contains(taskBox.getText()))
 			System.out.println("That task is already in the list");
-
 		else if (timeValue.equals(""))
 			System.out.println("Select a time");
-
 		else {
-			String userInput = taskBox.getText();
+			String userInput = taskBox.getText() ;
 			String time = timer.getValue().toString();
-
-			Task newTask = new Task(userInput, time);
-			addTaskToTable(newTask);
+			addTaskToTable(new Task(userInput, time));
 		}
 	}
 
 	private void addTaskToTable(Task task) {
-
+		dataManager.saveTask(task);
 		observableList.add(task);
 		tableView.setItems(observableList);
-
-		dataManager.saveTask(task);
-
 	}
 
 	@FXML
 	void removeTask(ActionEvent event) {
+		int selectedTaskIndex = tableView.getSelectionModel().getSelectedIndex();
 
-//		int selectedTaskIndex = listView.getSelectionModel().getSelectedIndex();
-//
-//		try {
-//			listView.getItems().remove(selectedTaskIndex);
-//
-//			dataManager.removeTask(selectedTaskIndex);
-//
-//		} catch (Exception e) {
-//			System.out.println("Select a task");
-//		}
-
+		try {
+			dataManager.removeTask(selectedTaskIndex);
+			observableList.remove(selectedTaskIndex);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Select a task");
+		}
 	}
 }

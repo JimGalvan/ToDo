@@ -36,15 +36,9 @@ public class Task {
 	public StringProperty taskTimeProperty() {
 		return this.taskTime;
 	}
-	
-	@Override
-	public String toString() {
-		return "Task name: " + taskName + ", time: " + taskTime;
-	}
 
-	public static void main(String[] args) {
-//
-//		Task task1 = new Task("nrw", 30);
-//		System.out.println(task1);
+	@Override
+	public String toString(){
+		return getName();
 	}
 }
