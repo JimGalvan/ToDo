@@ -1,7 +1,6 @@
 package ToDo;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import org.hildan.fxgson.FxGson;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 public class DataManager {
 
     private final Gson gson;
-    private ArrayList<Task> taskList;
+    private ArrayList<ToDoTask> taskList;
 
     public DataManager() {
         gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -25,8 +24,8 @@ public class DataManager {
 
         try {
 
-            JsonReader jsonReader = new JsonReader(new FileReader("src/Resources/task-list.json"));
-            Type collectionType = new TypeToken<ArrayList<Task>>() {
+            JsonReader jsonReader = new JsonReader(new FileReader("resources/data/task-list.json"));
+            Type collectionType = new TypeToken<ArrayList<ToDoTask>>() {
             }.getType();
 
             taskList = gson.fromJson(jsonReader, collectionType);
@@ -38,18 +37,18 @@ public class DataManager {
         }
     }
 
-    public void loadData(ArrayList<Task> arrayList) {
+    public void loadData(ArrayList<ToDoTask> arrayList) {
         arrayList.addAll(taskList);
     }
 
-    public void saveTask(Task task) {
+    public void saveTask(ToDoTask task) {
         taskList.add(task);
         saveChanges();
     }
 
     public void saveChanges() {
         try {
-            Writer writer = new FileWriter("src/Resources/task-list.json", false);
+            Writer writer = new FileWriter("resources/data/task-list.json", false);
             gson.toJson(taskList, writer);
 
             writer.flush();
@@ -63,5 +62,9 @@ public class DataManager {
     public void removeTask(int taskIndex) {
         taskList.remove(taskIndex);
         saveChanges();
+    }
+
+    public ArrayList<ToDoTask> getList(){
+        return taskList;
     }
 }

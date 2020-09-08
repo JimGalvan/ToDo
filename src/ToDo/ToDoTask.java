@@ -3,12 +3,12 @@ package ToDo;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Task {
+public class ToDoTask {
 
 	private SimpleStringProperty taskName;
 	private SimpleStringProperty taskTime;
 
-	public Task(String taskName, String time) {
+	public ToDoTask(String taskName, String time) {
 		this.taskName = new SimpleStringProperty(taskName);
 		this.taskTime = new SimpleStringProperty(time);
 	}

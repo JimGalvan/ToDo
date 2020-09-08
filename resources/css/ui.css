@@ -1,0 +1,10 @@
+.main-screen {
+    -fx-font-family: Corbel;
+}
+
+.table-view{
+    -fx-font-size:20px;
+}
+
+.table-row-cell{
+}

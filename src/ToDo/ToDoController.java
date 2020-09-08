@@ -18,9 +18,9 @@ public class ToDoController {
 
 	DataManager dataManager;
 
-	ObservableList<Task> observableList;
+	ObservableList<ToDoTask> observableList;
 
-	ArrayList<Task> taskArrayList;
+	ArrayList<ToDoTask> taskArrayList;
 
 	@FXML
 	private JFXTimePicker timer;
@@ -35,13 +35,13 @@ public class ToDoController {
 	private TextField taskBox;
 
 	@FXML
-	private TableView<Task> tableView;
+	private TableView<ToDoTask> tableView;
 
 	@FXML
-	private TableColumn<Task, String> taskColumn;
+	private TableColumn<ToDoTask, String> taskColumn;
 
 	@FXML
-	private TableColumn<Task, String> timeColumn;
+	private TableColumn<ToDoTask, String> timeColumn;
 
 	public void initialize() {
 
@@ -49,8 +49,8 @@ public class ToDoController {
 		taskArrayList = new ArrayList<>();
 
 		// Set up the columns in the table
-		taskColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
-		timeColumn.setCellValueFactory(new PropertyValueFactory<Task, String>("taskTime"));
+		taskColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskName"));
+		timeColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskTime"));
 
 		observableList = FXCollections.observableArrayList();
 
@@ -63,18 +63,18 @@ public class ToDoController {
 	void addTask(ActionEvent event) {
 		String timeValue = (timer.getValue() != null ? timer.getValue().toString() : "");
 
-		if (tableView.getItems().toString().contains(taskBox.getText()))
-			System.out.println("That task is already in the list");
-		else if (timeValue.equals(""))
-			System.out.println("Select a time");
+		if (isTaskInTheList(taskBox.getText())){
+			System.out.println("Task is in the list");
+		}
+		else if (timeValue.equals("")) System.out.println("Select a time");
 		else {
 			String userInput = taskBox.getText() ;
 			String time = timer.getValue().toString();
-			addTaskToTable(new Task(userInput, time));
+			addTaskToTable(new ToDoTask(userInput, time));
 		}
 	}
 
-	private void addTaskToTable(Task task) {
+	private void addTaskToTable(ToDoTask task) {
 		dataManager.saveTask(task);
 		observableList.add(task);
 		tableView.setItems(observableList);
@@ -82,14 +82,18 @@ public class ToDoController {
 
 	@FXML
 	void removeTask(ActionEvent event) {
-		int selectedTaskIndex = tableView.getSelectionModel().getSelectedIndex();
+			int selectedTaskIndex = tableView.getSelectionModel().getSelectedIndex();
 
-		try {
-			dataManager.removeTask(selectedTaskIndex);
-			observableList.remove(selectedTaskIndex);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Select a task");
-		}
+			//-1 means there is no items in tableView
+			if (selectedTaskIndex != -1){
+				dataManager.removeTask(selectedTaskIndex);
+				observableList.remove(selectedTaskIndex);
+			} else System.out.println("Select a task");
+	}
+
+	private boolean isTaskInTheList(String newTaskName) {
+		for (ToDoTask value : dataManager.getList())
+			if (value.toString().equals(newTaskName)) return true;
+		return false;
 	}
 }
