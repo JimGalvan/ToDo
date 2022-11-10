@@ -1,9 +1,19 @@
 
-Z	java:S106C"9Replace this use of System.out or System.err by a logger.(†ï¤ûÿÿÿÿ8üú¢ØÆ.
-Z	java:S106E"9Replace this use of System.out or System.err by a logger.(Û İõúÿÿÿÿ8«‚¤Å.
+W	java:S125E"<This block of commented-out lines of code should be removed.(Í½¶'8æƒûÉ.
+a
+java:S1128"?Remove this unused import 'com.jfoenix.controls.JFXTimePicker'.(ü›Íıÿÿÿÿ8‹ÆıùÉ.
+Q
+java:S1144i"4Remove this unused private "isTaskInTheList" method.(ôäÒ8æƒûÉ.
+U
+java:S1128	"3Remove this unused import 'javafx.fxml.FXMLLoader'.(À‡ô³úÿÿÿÿ8…²ùùÉ.
+
+java:S1130A"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(Õ«˜çşÿÿÿÿ8æƒûÉ.
 {	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(îé˜àıÿÿÿÿ8©ğùâÄ.
-v
-java:S22935"YReplace the type specification in this constructor call with the diamond operator ("<>").(ı¤İÌ8ˆ…–ØÆ.
-v
-java:S22934"YReplace the type specification in this constructor call with the diamond operator ("<>").(î—‡ 8ˆ…–ØÆ.
-Z	java:S106["9Replace this use of System.out or System.err by a logger.(ä÷Û…ıÿÿÿÿ8Òú¬×Æ.
+Z	java:S106f"9Replace this use of System.out or System.err by a logger.(ä÷Û…ıÿÿÿÿ8æƒûÉ.
+P
+java:S1144X"3Remove this unused private "addTaskToTable" method.(¼á¹ò8æƒûÉ.
+]	java:S125G"<This block of commented-out lines of code should be removed.(ÓĞü“ûÿÿÿÿ8æƒûÉ.
+M
+java:S14818"1Remove this unused "initialValue" local variable.(Ä·òq8éÑÊ.
+\
+java:S18548"@Remove this useless assignment to local variable "initialValue".(Ä·òq8éÑÊ.
