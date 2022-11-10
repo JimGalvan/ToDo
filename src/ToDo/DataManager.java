@@ -12,11 +12,11 @@ import java.util.ArrayList;
 public class DataManager {
 
     private final Gson gson;
-    private ArrayList<ToDoTask> taskList;
+    private ArrayList<ToDoTask> tasks;
 
     public DataManager() {
         gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        taskList = new ArrayList<>();
+        tasks = new ArrayList<>();
         loadJSONList();
     }
 
@@ -28,8 +28,7 @@ public class DataManager {
             Type collectionType = new TypeToken<ArrayList<ToDoTask>>() {
             }.getType();
 
-            taskList = gson.fromJson(jsonReader, collectionType);
-
+            tasks = gson.fromJson(jsonReader, collectionType);
             System.out.println("Data loaded");
 
         } catch (FileNotFoundException e) {
@@ -38,18 +37,18 @@ public class DataManager {
     }
 
     public void loadData(ArrayList<ToDoTask> arrayList) {
-        arrayList.addAll(taskList);
+        arrayList.addAll(tasks);
     }
 
     public void saveTask(ToDoTask task) {
-        taskList.add(task);
+        tasks.add(task);
         saveChanges();
     }
 
     public void saveChanges() {
         try {
             Writer writer = new FileWriter("resources/data/task-list.json", false);
-            gson.toJson(taskList, writer);
+            gson.toJson(tasks, writer);
 
             writer.flush();
             writer.close();
@@ -60,11 +59,11 @@ public class DataManager {
     }
 
     public void removeTask(int taskIndex) {
-        taskList.remove(taskIndex);
+        tasks.remove(taskIndex);
         saveChanges();
     }
 
-    public ArrayList<ToDoTask> getList(){
-        return taskList;
+    public ArrayList<ToDoTask> getTasks(){
+        return tasks;
     }
 }

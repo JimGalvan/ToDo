@@ -14,11 +14,9 @@ import java.util.ArrayList;
 
 public class ToDoController {
 
-    DataManager dataManager;
+    private DataManager dataManager;
 
-    ObservableList<ToDoTask> observableList;
-
-    ArrayList<ToDoTask> taskArrayList;
+    private ObservableList<ToDoTask> observableList;
 
     @FXML
     private JFXTimePicker timer;
@@ -44,16 +42,16 @@ public class ToDoController {
     public void initialize() {
 
         dataManager = new DataManager();
-        taskArrayList = new ArrayList<>();
+        ArrayList<ToDoTask> tasks = new ArrayList<>();
 
         // Set up the columns in the table
-        taskColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskName"));
-        timeColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskTime"));
+        taskColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("taskTime"));
 
         observableList = FXCollections.observableArrayList();
 
-        dataManager.loadData(taskArrayList);
-        observableList.setAll(taskArrayList);
+        dataManager.loadData(tasks);
+        observableList.setAll(tasks);
         tableView.setItems(observableList);
     }
 
@@ -95,8 +93,9 @@ public class ToDoController {
     }
 
     private boolean isTaskInTheList(String newTaskName) {
-        for (ToDoTask value : dataManager.getList())
+        for (ToDoTask value : dataManager.getTasks()) {
             if (value.toString().equals(newTaskName)) return true;
+        }
         return false;
     }
 }
