@@ -5,8 +5,8 @@ import javafx.beans.property.StringProperty;
 
 public class ToDoTask {
 
-	private SimpleStringProperty taskName;
-	private SimpleStringProperty taskTime;
+	private final SimpleStringProperty taskName;
+	private final SimpleStringProperty taskTime;
 
 	public ToDoTask(String taskName, String time) {
 		this.taskName = new SimpleStringProperty(taskName);

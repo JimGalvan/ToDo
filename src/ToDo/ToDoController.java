@@ -1,12 +1,11 @@
 package ToDo;
 
-import com.jfoenix.controls.JFXTimePicker;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -17,9 +16,8 @@ import java.util.ArrayList;
 
 public class ToDoController {
 
-    DataManager dataManager;
-    ObservableList<ToDoTask> observableList;
-    ArrayList<ToDoTask> taskArrayList;
+    private DataManager dataManager;
+    private ObservableList<ToDoTask> observableList;
 
     @FXML
     private Button cancelButton;
@@ -47,7 +45,7 @@ public class ToDoController {
     public void initialize() {
         addTaskPanel.setVisible(false);
         dataManager = new DataManager();
-        taskArrayList = new ArrayList<>();
+        ArrayList<ToDoTask> taskArrayList = new ArrayList<>();
         observableList = FXCollections.observableArrayList();
 
         // Set up the columns in the table
@@ -57,18 +55,8 @@ public class ToDoController {
         dataManager.loadData(taskArrayList);
         observableList.setAll(taskArrayList);
         tableView.setItems(observableList);
-
-        setUpTimer();
     }
 
-    private void setUpTimer() {
-        hourSelector.setPromptText("00");
-        minSelector.setPromptText("00");
-        final int initialValue = 3;
-
-        hourSelector.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 24, 0));
-        minSelector.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 60, 0));
-    }
 
     @FXML
     void addTask(ActionEvent event) throws IOException {
