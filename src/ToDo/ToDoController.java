@@ -6,94 +6,97 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
 
 import java.util.ArrayList;
 
 public class ToDoController {
 
-	DataManager dataManager;
+    DataManager dataManager;
 
-	ObservableList<ToDoTask> observableList;
+    ObservableList<ToDoTask> observableList;
 
-	ArrayList<ToDoTask> taskArrayList;
+    ArrayList<ToDoTask> taskArrayList;
 
-	@FXML
-	private JFXTimePicker timer;
+    @FXML
+    private JFXTimePicker timer;
 
-	@FXML
-	private Button addButton;
+    @FXML
+    private Button addButton;
 
-	@FXML
-	private Button removeButton;
+    @FXML
+    private Button removeButton;
 
-	@FXML
-	private TextField taskBox;
+    @FXML
+    private TextField taskBox;
 
-	@FXML
-	private TableView<ToDoTask> tableView;
+    @FXML
+    private TableView<ToDoTask> tableView;
 
-	@FXML
-	private TableColumn<ToDoTask, String> taskColumn;
+    @FXML
+    private TableColumn<ToDoTask, String> taskColumn;
 
-	@FXML
-	private TableColumn<ToDoTask, String> timeColumn;
+    @FXML
+    private TableColumn<ToDoTask, String> timeColumn;
 
-	public void initialize() {
+    public void initialize() {
 
-		dataManager = new DataManager();
-		taskArrayList = new ArrayList<>();
+        dataManager = new DataManager();
+        taskArrayList = new ArrayList<>();
 
-		// Set up the columns in the table
-		taskColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskName"));
-		timeColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskTime"));
+        // Set up the columns in the table
+        taskColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskName"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<ToDoTask, String>("taskTime"));
 
-		observableList = FXCollections.observableArrayList();
+        observableList = FXCollections.observableArrayList();
 
-		dataManager.loadData(taskArrayList);
-		observableList.setAll(taskArrayList);
-		tableView.setItems(observableList);
-	}
+        dataManager.loadData(taskArrayList);
+        observableList.setAll(taskArrayList);
+        tableView.setItems(observableList);
+    }
 
-	@FXML
-	void addTask(ActionEvent event) {
-		String timeValue = (timer.getValue() != null ? timer.getValue().toString() : "");
+    @FXML
+    void addTask(ActionEvent event) {
+        String timeValue = (timer.getValue() != null ? timer.getValue().toString() : "");
 
-		if (isTaskInTheList(taskBox.getText())){
-			System.out.println("Task is in the list");
-		}
-		else if (timeValue.equals("")) System.out.println("Select a time");
-		else {
-			String userInput = taskBox.getText() ;
-			String time = timer.getValue().toString();
-			addTaskToTable(new ToDoTask(userInput, time));
-		}
-	}
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
-	private void addTaskToTable(ToDoTask task) {
-		dataManager.saveTask(task);
-		observableList.add(task);
-		tableView.setItems(observableList);
-	}
+        if (isTaskInTheList(taskBox.getText())) {
+            alert.setContentText("Task is already in list. Please enter a different name.");
+            alert.showAndWait();
+        } else if (timeValue.equals("")) {
+            alert.setContentText("Please select a time for the task before adding it.");
+            alert.showAndWait();
+        } else {
+            String userInput = taskBox.getText();
+            String time = timer.getValue().toString();
+            addTaskToTable(new ToDoTask(userInput, time));
+        }
+    }
 
-	@FXML
-	void removeTask(ActionEvent event) {
-			int selectedTaskIndex = tableView.getSelectionModel().getSelectedIndex();
+    private void addTaskToTable(ToDoTask task) {
+        dataManager.saveTask(task);
+        observableList.add(task);
+        tableView.setItems(observableList);
+    }
 
-			//-1 means there is no items in tableView
-			if (selectedTaskIndex != -1){
-				dataManager.removeTask(selectedTaskIndex);
-				observableList.remove(selectedTaskIndex);
-			} else System.out.println("Select a task");
-	}
+    @FXML
+    void removeTask(ActionEvent event) {
+        int selectedTaskIndex = tableView.getSelectionModel().getSelectedIndex();
 
-	private boolean isTaskInTheList(String newTaskName) {
-		for (ToDoTask value : dataManager.getList())
-			if (value.toString().equals(newTaskName)) return true;
-		return false;
-	}
+        //-1 means there is no items in tableView
+        if (selectedTaskIndex != -1) {
+            dataManager.removeTask(selectedTaskIndex);
+            observableList.remove(selectedTaskIndex);
+        } else System.out.println("Select a task");
+    }
+
+    private boolean isTaskInTheList(String newTaskName) {
+        for (ToDoTask value : dataManager.getList())
+            if (value.toString().equals(newTaskName)) return true;
+        return false;
+    }
 }
