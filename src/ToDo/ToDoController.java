@@ -20,27 +20,49 @@ public class ToDoController {
     private ObservableList<ToDoTask> observableList;
 
     @FXML
-    private Button cancelButton;
+    private VBox gridPane;
+
     @FXML
-    private Button saveTaskButton;
+    private Button addListButton;
+
     @FXML
     private Button addButton;
-    @FXML
-    private GridPane addTaskPanel;
-    @FXML
-    private VBox gridPane;
-    @FXML
-    private TableView<ToDoTask> tableView;
-    @FXML
-    private TableColumn<ToDoTask, String> taskColumn;
-    @FXML
-    private TableColumn<ToDoTask, String> timeColumn;
-    @FXML
-    private TextField nameTextField;
+
     @FXML
     private Button deleteButton;
+
+    @FXML
+    private TableView<ToDoTask> tableView;
+
+    @FXML
+    private TableColumn<?, ?> taskColumn;
+
+    @FXML
+    private TableColumn<?, ?> timeColumn;
+
+    @FXML
+    private GridPane addTaskPanel;
+
+    @FXML
+    private Button saveTaskButton;
+
+    @FXML
+    private TextField nameTextField;
+
+    @FXML
+    private Button cancelButton;
+
     @FXML
     private ChoiceBox<String> taskTypesList;
+
+    @FXML
+    private TitledPane dayAccordion;
+
+    @FXML
+    private ListView<?> todayList;
+
+    @FXML
+    private ListView<?> tomorrowList;
 
     public void initialize() {
         taskTypesList.setItems(TaskTypes.getTaskTypes());
