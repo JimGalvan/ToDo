@@ -39,9 +39,12 @@ public class ToDoController {
     private TextField nameTextField;
     @FXML
     private Button deleteButton;
-
+    @FXML
+    private ChoiceBox<String> taskTypesList;
 
     public void initialize() {
+        taskTypesList.setItems(TaskTypes.getTaskTypes());
+
         addTaskPanel.setVisible(false);
         dataManager = new DataManager();
         ArrayList<ToDoTask> taskArrayList = new ArrayList<>();
@@ -66,10 +69,12 @@ public class ToDoController {
     void saveTask(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        String name = nameTextField.getText();
 
-        if (isInvalidText(name)) {
-            alert.setContentText("Task name can not be empty.");
+        String name = nameTextField.getText();
+        String taskType = taskTypesList.getValue();
+
+        if (isInvalidText(name) || isInvalidText(taskType)) {
+            alert.setContentText("Task name or type can not be empty.");
             alert.showAndWait();
 
         } else if (isTaskInTheList(nameTextField.getText())) {
@@ -78,12 +83,16 @@ public class ToDoController {
 
         } else {
             String userInput = nameTextField.getText();
-            addTaskToTable(new ToDoTask(userInput, null));
+            addTaskToTable(new ToDoTask(userInput, taskType));
             addTaskPanel.setVisible(false);
         }
     }
 
     private boolean isInvalidText(String name) {
+        if (name == null) {
+            return true;
+        }
+
         Pattern isEmptyText = Pattern.compile("\\s+");
         return (name.isEmpty()) || (isEmptyText.matcher(name).matches());
     }
