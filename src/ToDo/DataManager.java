@@ -11,8 +11,9 @@ import java.util.ArrayList;
 
 public class DataManager {
 
-    private final Gson gson;
     private ArrayList<ToDoTask> tasks;
+    private final Gson gson;
+    private final static String listJsonPath = "resources/data/task-list.json";
 
     public DataManager() {
         gson = FxGson.coreBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -24,7 +25,7 @@ public class DataManager {
 
         try {
 
-            JsonReader jsonReader = new JsonReader(new FileReader("resources/data/task-list.json"));
+            JsonReader jsonReader = new JsonReader(new FileReader(listJsonPath));
             Type collectionType = new TypeToken<ArrayList<ToDoTask>>() {
             }.getType();
 
@@ -47,7 +48,7 @@ public class DataManager {
 
     public void saveChanges() {
         try {
-            Writer writer = new FileWriter("resources/data/task-list.json", false);
+            Writer writer = new FileWriter(listJsonPath, false);
             gson.toJson(tasks, writer);
 
             writer.flush();
@@ -63,7 +64,7 @@ public class DataManager {
         saveChanges();
     }
 
-    public ArrayList<ToDoTask> getTasks(){
+    public ArrayList<ToDoTask> getTasks() {
         return tasks;
     }
 }
