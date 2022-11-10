@@ -5,14 +5,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class ToDoController {
 
@@ -37,10 +37,6 @@ public class ToDoController {
     private TableColumn<ToDoTask, String> timeColumn;
     @FXML
     private TextField nameTextField;
-    @FXML
-    private Spinner<Integer> hourSelector;
-    @FXML
-    private Spinner<Integer> minSelector;
 
     public void initialize() {
         addTaskPanel.setVisible(false);
@@ -59,26 +55,34 @@ public class ToDoController {
 
 
     @FXML
-    void addTask(ActionEvent event) throws IOException {
-
+    void addTask(ActionEvent event) {
         addTaskPanel.setVisible(true);
-
-//		String timeValue = (timer.getValue() != null ? timer.getValue().toString() : "");
-//
-//		if (isTaskInTheList(taskBox.getText())){
-//			System.out.println("Task is in the list");
-//		}
-//		else if (timeValue.equals("")) System.out.println("Select a time");
-//		else {
-//			String userInput = taskBox.getText() ;
-//			String time = timer.getValue().toString();
-//			addTaskToTable(new ToDoTask(userInput, time));
-//		}
     }
 
     @FXML
     void saveTask(ActionEvent event) {
-        addTaskPanel.setVisible(false);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        String name = nameTextField.getText();
+
+        if (isInvalidText(name)) {
+            alert.setContentText("Task name can not be empty.");
+            alert.showAndWait();
+
+        } else if (isTaskInTheList(nameTextField.getText())) {
+            alert.setContentText("Task name is already is already taken. Please select another name.");
+            alert.showAndWait();
+
+        } else {
+            String userInput = nameTextField.getText();
+            addTaskToTable(new ToDoTask(userInput, null));
+            addTaskPanel.setVisible(false);
+        }
+    }
+
+    private boolean isInvalidText(String name) {
+        Pattern isEmptyText = Pattern.compile("\\s+");
+        return (name.isEmpty()) || (isEmptyText.matcher(name).matches());
     }
 
 
@@ -100,15 +104,14 @@ public class ToDoController {
     }
 
     private boolean isTaskInTheList(String newTaskName) {
-        for (ToDoTask value : dataManager.getTasks())
+        for (ToDoTask value : dataManager.getTasks()) {
             if (value.toString().equals(newTaskName)) return true;
+        }
         return false;
     }
 
     @FXML
     void cancelNewTask(ActionEvent event) {
         addTaskPanel.setVisible(false);
-        minSelector.getEditor().clear();
-        hourSelector.getEditor().clear();
     }
 }
