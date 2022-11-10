@@ -37,6 +37,9 @@ public class ToDoController {
     private TableColumn<ToDoTask, String> timeColumn;
     @FXML
     private TextField nameTextField;
+    @FXML
+    private Button deleteButton;
+
 
     public void initialize() {
         addTaskPanel.setVisible(false);
@@ -100,7 +103,10 @@ public class ToDoController {
         if (selectedTaskIndex != -1) {
             dataManager.removeTask(selectedTaskIndex);
             observableList.remove(selectedTaskIndex);
-        } else System.out.println("Select a task");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a task to delete");
+            alert.showAndWait();
+        }
     }
 
     private boolean isTaskInTheList(String newTaskName) {

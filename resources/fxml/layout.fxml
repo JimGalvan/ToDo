@@ -32,6 +32,11 @@
                         <Font size="17.0" />
                      </font>
                   </Button>
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#removeTask" prefHeight="36.0" prefWidth="93.0" text="Delete" GridPane.columnIndex="1">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Button>
                </children>
             </GridPane>
          </children>
