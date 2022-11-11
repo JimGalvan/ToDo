@@ -15,3 +15,5 @@ App that allows you to create a To-do list with multiple different types of task
 # Features and improvements in progress
 - Use of Hibernate and Derby DB for data persistance. 
 - Multiple list of tasks instead of a single place for all. 
+
+## NOTE: To see incomplete updates progress, go to brach: 2022Updates
