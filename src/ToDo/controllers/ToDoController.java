@@ -14,23 +14,21 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ToDoController {
 
     private DataManager dataManager;
-    private ObservableList<ToDoTask> tableObservableList;
 
     @FXML
     private VBox gridPane;
-
-    @FXML
-    private Button addListButton;
 
     @FXML
     private Button addButton;
@@ -66,20 +64,26 @@ public class ToDoController {
     private TitledPane dayAccordion;
 
     @FXML
-    private ListView<TaskList> todaySidePanelList;
+    private ListView<TaskList> todaySideList;
 
     @FXML
     private ListView<?> tomorrowList;
 
+    @FXML
+    private ImageView deleteListButton;
+
+    @FXML
+    private ImageView addListButton;
+
     public void initialize() {
         dataManager = new DataManager();
-        dataManager.loadDummyData(todaySidePanelList);
+        dataManager.loadDummyData(todaySideList);
 
         taskTypesList.setItems(TaskTypes.getTaskTypes());
         addTaskPanel.setVisible(false);
 
         ArrayList<ToDoTask> taskArrayList = new ArrayList<>();
-        tableObservableList = FXCollections.observableArrayList();
+        ObservableList<ToDoTask> tableObservableList = FXCollections.observableArrayList();
 
         // Set up the columns in the table
         taskColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
@@ -91,13 +95,35 @@ public class ToDoController {
     }
 
     @FXML
-    void addList(ActionEvent event) {
+    void deleteList(MouseEvent event) {
+        TaskList selectedList = todaySideList.getSelectionModel().getSelectedItem();
+        if (selectedList != null && dataManager.isTaskListPresent(selectedList)) {
+            ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
+            todaySideList.setItems(tempList);
+        }
+    }
+
+    @FXML
+    void addList(MouseEvent event) {
         TextInputDialog newListDialog = new TextInputDialog();
         newListDialog.setHeaderText("Enter list name");
-        newListDialog.showAndWait();
+        Optional<String> userSelection = newListDialog.showAndWait();
+
+        if (userSelection.equals(Optional.empty())) {
+            return;
+        }
+
         String taskListName = newListDialog.getEditor().getText();
+
+        if (StringUtils.isInvalidText(taskListName)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "List name can't be empty");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.showAndWait();
+            return;
+        }
+
         ObservableList<TaskList> newList = dataManager.addTaskList(taskListName);
-        todaySidePanelList.setItems(newList);
+        todaySideList.setItems(newList);
     }
 
     /**
@@ -105,6 +131,12 @@ public class ToDoController {
      */
     @FXML
     void addTask(ActionEvent event) {
+        int selectedIndex = todaySideList.getSelectionModel().getSelectedIndex();
+        if (selectedIndex == -1) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a list to add a task.");
+            alert.showAndWait();
+            return;
+        }
         addTaskPanel.setVisible(true);
     }
 
@@ -118,7 +150,7 @@ public class ToDoController {
 
         String taskType = taskTypesList.getValue();
         String taskName = taskNameTextField.getText();
-        String selectedList = todaySidePanelList.getSelectionModel().getSelectedItem().getName();
+        String selectedList = todaySideList.getSelectionModel().getSelectedItem().getName();
 
         if (StringUtils.isInvalidText(taskName) || StringUtils.isInvalidText(taskType)) {
             alert.setContentText("Task name or type can not be empty.");
@@ -144,7 +176,7 @@ public class ToDoController {
 
         try {
             selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
-            selectedList = todaySidePanelList.getSelectionModel().getSelectedItem().getName();
+            selectedList = todaySideList.getSelectionModel().getSelectedItem().getName();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a list and a task to delete");
             alert.showAndWait();

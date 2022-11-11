@@ -113,4 +113,13 @@ public class DataManager {
         this.dayContainer.addList(taskList);
         return this.dayContainer.getObservableList();
     }
+
+    public ObservableList<TaskList> removeTaskList(String selectedListName) {
+        this.dayContainer.removeList(selectedListName);
+        return dayContainer.getObservableList();
+    }
+
+    public boolean isTaskListPresent(TaskList selectedList) {
+        return dayContainer.contains(selectedList);
+    }
 }

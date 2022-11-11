@@ -26,7 +26,7 @@ public class DayContainer {
         dayTaskListCollection.put(listName, taskList);
     }
 
-    public HashMap<String, TaskList> getItems(){
+    public HashMap<String, TaskList> getItems() {
         return dayTaskListCollection;
     }
 
@@ -34,5 +34,13 @@ public class DayContainer {
         ObservableList<TaskList> observableTempList = FXCollections.observableArrayList();
         dayTaskListCollection.forEach((taskListName, taskList) -> observableTempList.add(taskList));
         return observableTempList;
+    }
+
+    public void removeList(String selectedListName) {
+        dayTaskListCollection.remove(selectedListName);
+    }
+
+    public boolean contains(TaskList selectedList) {
+        return this.dayTaskListCollection.containsKey(selectedList.getName());
     }
 }
