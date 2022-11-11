@@ -77,21 +77,15 @@ public class ToDoController {
 
     public void initialize() {
         dataManager = new DataManager();
-        dataManager.loadDummyData(todaySideList);
-
+        dataManager.loadJsonData(todaySideList);
         taskTypesList.setItems(TaskTypes.getTaskTypes());
         addTaskPanel.setVisible(false);
-
-        ArrayList<ToDoTask> taskArrayList = new ArrayList<>();
-        ObservableList<ToDoTask> tableObservableList = FXCollections.observableArrayList();
 
         // Set up the columns in the table
         taskColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("taskTime"));
 
-        dataManager.loadData(taskArrayList);
-        tableObservableList.setAll(taskArrayList);
-        tableView.setItems(tableObservableList);
+        dataManager.saveUpdates();
     }
 
     @FXML
@@ -100,6 +94,10 @@ public class ToDoController {
         if (selectedList != null && dataManager.isTaskListPresent(selectedList)) {
             ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
             todaySideList.setItems(tempList);
+        }
+
+        if (todaySideList.getItems().size() == 0) {
+            tableView.getItems().clear();
         }
     }
 
@@ -201,13 +199,17 @@ public class ToDoController {
 
     @FXML
     void clickTask(MouseEvent event) {
-        // get task name
         Node selectedList = event.getPickResult().getIntersectedNode();
-        String listName = NodeUtils.getNodeText(selectedList);
+        if (selectedList == null) return;
+        String listName;
 
-        if (StringUtils.isInvalidText(listName)) {
+        try {
+            listName = NodeUtils.getNodeText(selectedList);
+        } catch (ClassCastException e) {
             return;
         }
+
+        if (StringUtils.isInvalidText(listName)) return;
 
         // select list based on name
         ObservableList<ToDoTask> listTasks = dataManager.getObservableList(listName);

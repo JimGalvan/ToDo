@@ -143,4 +143,4 @@ hs_err_pid*
 replay_pid*
 
 /out/
-resources/data/task-list.json
+resources/data/task-data.json
