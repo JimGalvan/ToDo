@@ -11,3 +11,7 @@ App that allows you to create a To-do list with multiple different types of task
   - IntelliJ IDEA Community: https://www.jetbrains.com/idea/download/#section=windows
 <br>
 2. Open the project on IntelliJ, and run the main method inside class 'Launcher' under /src/ToDo/
+
+# Features and improvements in progress
+- Use of Hibernate and Derby DB for data persistance. 
+- Multiple list of tasks instead of a single place for all. 
