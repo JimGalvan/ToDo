@@ -78,13 +78,10 @@ public class ToDoController {
     public void initialize() {
         dataManager = new DataManager();
         dataManager.loadJsonData(todaySideList);
-//        taskTypesList.setItems(TaskTypes.getTaskTypes());
         addTaskPanel.setVisible(false);
 
         // Set up the columns in the table
         taskColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
-//        timeColumn.setCellValueFactory(new PropertyValueFactory<>("taskTime"));
-
         dataManager.saveUpdates();
     }
 
