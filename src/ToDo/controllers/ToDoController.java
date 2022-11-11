@@ -1,12 +1,20 @@
-package ToDo;
+package ToDo.controllers;
 
 
+import ToDo.models.DataManager;
+import ToDo.models.days.DayTaskList;
+import ToDo.models.tasks.TaskTypes;
+import ToDo.models.tasks.ToDoTask;
+import ToDo.utils.NodeUtils;
+import ToDo.utils.StringUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -59,16 +67,18 @@ public class ToDoController {
     private TitledPane dayAccordion;
 
     @FXML
-    private ListView<?> todayList;
+    private ListView<DayTaskList> todayList;
 
     @FXML
     private ListView<?> tomorrowList;
 
     public void initialize() {
-        taskTypesList.setItems(TaskTypes.getTaskTypes());
-
-        addTaskPanel.setVisible(false);
         dataManager = new DataManager();
+        dataManager.initDayListData(todayList);
+
+        taskTypesList.setItems(TaskTypes.getTaskTypes());
+        addTaskPanel.setVisible(false);
+
         ArrayList<ToDoTask> taskArrayList = new ArrayList<>();
         observableList = FXCollections.observableArrayList();
 
@@ -94,36 +104,24 @@ public class ToDoController {
 
         String name = nameTextField.getText();
         String taskType = taskTypesList.getValue();
+        String taskName = nameTextField.getText();
 
-        if (isInvalidText(name) || isInvalidText(taskType)) {
+        if (StringUtils.isInvalidText(name) || StringUtils.isInvalidText(taskType)) {
             alert.setContentText("Task name or type can not be empty.");
             alert.showAndWait();
 
-        } else if (isTaskInTheList(nameTextField.getText())) {
+        } else if (dataManager.isTaskInTheList(taskName)) {
             alert.setContentText("Task name is already is already taken. Please select another name.");
             alert.showAndWait();
 
         } else {
-            String userInput = nameTextField.getText();
-            addTaskToTable(new ToDoTask(userInput, taskType));
+            ToDoTask newTask = new ToDoTask(taskName, taskType);
+
+            dataManager.saveTask(newTask);
+            observableList.add(newTask);
+            tableView.setItems(observableList);
             addTaskPanel.setVisible(false);
         }
-    }
-
-    private boolean isInvalidText(String name) {
-        if (name == null) {
-            return true;
-        }
-
-        Pattern isEmptyText = Pattern.compile("\\s+");
-        return (name.isEmpty()) || (isEmptyText.matcher(name).matches());
-    }
-
-
-    private void addTaskToTable(ToDoTask task) {
-        dataManager.saveTask(task);
-        observableList.add(task);
-        tableView.setItems(observableList);
     }
 
     @FXML
@@ -140,15 +138,19 @@ public class ToDoController {
         }
     }
 
-    private boolean isTaskInTheList(String newTaskName) {
-        for (ToDoTask value : dataManager.getTasks()) {
-            if (value.toString().equals(newTaskName)) return true;
-        }
-        return false;
-    }
-
     @FXML
     void cancelNewTask(ActionEvent event) {
         addTaskPanel.setVisible(false);
+    }
+
+    @FXML
+    void clickTask(MouseEvent event) {
+        // get task name
+        Node selectedList = event.getPickResult().getIntersectedNode();
+        String listName = NodeUtils.getNodeText(selectedList);
+
+        // select list based on name
+        ObservableList<ToDoTask> listTasks = dataManager.getListTasks(listName);
+        tableView.setItems(listTasks);
     }
 }
