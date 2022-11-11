@@ -1,7 +1,7 @@
 # ToDo-app
-App that allows you to create a To-do list with multiple different types of tasks. This app is made using Java, Gson, JsonFX, and JavaFX.<br>
+App that allows you to create a lists of to-do tasks. This app is made using Java, Gson, JsonFX, and JavaFX.<br>
 
-<img width="430" alt="TodoTask" src="https://user-images.githubusercontent.com/58128571/201043482-5fca1fb1-b78b-497a-a025-0d5211c7403f.png">
+![beta todo](https://user-images.githubusercontent.com/58128571/201324902-fb447a6c-f792-45ae-baa5-207bcf2dde65.png)
 
 
 ## How to run ToDo app
