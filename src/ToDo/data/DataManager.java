@@ -1,4 +1,4 @@
-package ToDo.models;
+package ToDo.data;
 
 import ToDo.models.days.DayContainer;
 import ToDo.models.days.TaskList;
@@ -106,5 +106,11 @@ public class DataManager {
         TaskList taskList = dayContainer.getList(selectedList);
         taskList.remove(selectTaskName);
         return taskList.getObservableList();
+    }
+
+    public ObservableList<TaskList> addTaskList(String taskListName) {
+        TaskList taskList = new TaskList(taskListName);
+        this.dayContainer.addList(taskList);
+        return this.dayContainer.getObservableList();
     }
 }

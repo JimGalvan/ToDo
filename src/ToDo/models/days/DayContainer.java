@@ -1,5 +1,8 @@
 package ToDo.models.days;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -25,5 +28,11 @@ public class DayContainer {
 
     public HashMap<String, TaskList> getItems(){
         return dayTaskListCollection;
+    }
+
+    public ObservableList<TaskList> getObservableList() {
+        ObservableList<TaskList> observableTempList = FXCollections.observableArrayList();
+        dayTaskListCollection.forEach((taskListName, taskList) -> observableTempList.add(taskList));
+        return observableTempList;
     }
 }

@@ -44,7 +44,7 @@
                         <Font size="38.0" />
                      </font>
                   </Text>
-                  <Button fx:id="addListButton" mnemonicParsing="false" prefHeight="34.0" prefWidth="53.0" text="+" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                  <Button fx:id="addListButton" mnemonicParsing="false" onAction="#addList" prefHeight="34.0" prefWidth="53.0" text="+" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                      <font>
                         <Font size="23.0" />
                      </font>
@@ -105,7 +105,7 @@
                               <Font size="16.0" />
                            </font>
                         </Button>
-                        <TextField fx:id="nameTextField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="52.0" prefWidth="237.0" promptText="Name" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <TextField fx:id="taskNameTextField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="52.0" prefWidth="237.0" promptText="Name" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="5.0" right="5.0" />
                            </GridPane.margin>
@@ -142,7 +142,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <ListView fx:id="todayList" onMouseClicked="#clickTask" prefHeight="672.0" prefWidth="333.0" />
+                              <ListView fx:id="todaySidePanelList" onMouseClicked="#clickTask" prefHeight="672.0" prefWidth="333.0" />
                            </children>
                         </AnchorPane>
                   </content>

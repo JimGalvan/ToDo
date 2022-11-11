@@ -1,7 +1,7 @@
 package ToDo.controllers;
 
 
-import ToDo.models.DataManager;
+import ToDo.data.DataManager;
 import ToDo.models.days.TaskList;
 import ToDo.models.tasks.TaskTypes;
 import ToDo.models.tasks.ToDoTask;
@@ -54,7 +54,7 @@ public class ToDoController {
     private Button saveTaskButton;
 
     @FXML
-    private TextField nameTextField;
+    private TextField taskNameTextField;
 
     @FXML
     private Button cancelButton;
@@ -66,14 +66,14 @@ public class ToDoController {
     private TitledPane dayAccordion;
 
     @FXML
-    private ListView<TaskList> todayList;
+    private ListView<TaskList> todaySidePanelList;
 
     @FXML
     private ListView<?> tomorrowList;
 
     public void initialize() {
         dataManager = new DataManager();
-        dataManager.loadDummyData(todayList);
+        dataManager.loadDummyData(todaySidePanelList);
 
         taskTypesList.setItems(TaskTypes.getTaskTypes());
         addTaskPanel.setVisible(false);
@@ -90,6 +90,15 @@ public class ToDoController {
         tableView.setItems(tableObservableList);
     }
 
+    @FXML
+    void addList(ActionEvent event) {
+        TextInputDialog newListDialog = new TextInputDialog();
+        newListDialog.setHeaderText("Enter list name");
+        newListDialog.showAndWait();
+        String taskListName = newListDialog.getEditor().getText();
+        ObservableList<TaskList> newList = dataManager.addTaskList(taskListName);
+        todaySidePanelList.setItems(newList);
+    }
 
     /**
      * Opens the  dialog to enter the information for a new task
@@ -108,8 +117,8 @@ public class ToDoController {
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         String taskType = taskTypesList.getValue();
-        String taskName = nameTextField.getText();
-        String selectedList = todayList.getSelectionModel().getSelectedItem().getName();
+        String taskName = taskNameTextField.getText();
+        String selectedList = todaySidePanelList.getSelectionModel().getSelectedItem().getName();
 
         if (StringUtils.isInvalidText(taskName) || StringUtils.isInvalidText(taskType)) {
             alert.setContentText("Task name or type can not be empty.");
@@ -124,16 +133,27 @@ public class ToDoController {
             ObservableList<ToDoTask> observableTempList = dataManager.updateTaskList(selectedList, newTask);
             tableView.setItems(observableTempList);
             addTaskPanel.setVisible(false);
+            taskNameTextField.clear();
         }
     }
 
     @FXML
     void removeTask(ActionEvent event) {
-        String selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
-        String selectedList = todayList.getSelectionModel().getSelectedItem().getName();
+        String selectTaskName = null;
+        String selectedList = null;
+
+        try {
+            selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
+            selectedList = todaySidePanelList.getSelectionModel().getSelectedItem().getName();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a list and a task to delete");
+            alert.showAndWait();
+            return;
+        }
+
 
         //-1 means there is no items in tableView
-        if (!StringUtils.isInvalidText(selectTaskName)) {
+        if (!StringUtils.isInvalidText(selectTaskName) && !StringUtils.isInvalidText(selectedList)) {
             ObservableList<ToDoTask> observableListTemp = dataManager.removeTaskFromList(selectedList, selectTaskName);
             tableView.setItems(observableListTemp);
         } else {
