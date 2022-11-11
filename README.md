@@ -13,7 +13,8 @@ App that allows you to create a lists of to-do tasks. This app is made using Jav
 2. Open the project on IntelliJ, and run the main method inside class 'Launcher' under /src/ToDo/
 
 # Features and improvements in progress
-- Use of Hibernate and Derby DB for data persistance. 
+- Use of Hibernate and Derby DB for better data storing and handling. (This will replace the JSON file to store data) 
 - More icons and label functionality. 
+- Data binding pattern for better design. 
 
 ## NOTE: To see incomplete updates progress, go to brach: 2022Updates
