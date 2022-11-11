@@ -78,12 +78,12 @@ public class ToDoController {
     public void initialize() {
         dataManager = new DataManager();
         dataManager.loadJsonData(todaySideList);
-        taskTypesList.setItems(TaskTypes.getTaskTypes());
+//        taskTypesList.setItems(TaskTypes.getTaskTypes());
         addTaskPanel.setVisible(false);
 
         // Set up the columns in the table
         taskColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
-        timeColumn.setCellValueFactory(new PropertyValueFactory<>("taskTime"));
+//        timeColumn.setCellValueFactory(new PropertyValueFactory<>("taskTime"));
 
         dataManager.saveUpdates();
     }
@@ -146,11 +146,10 @@ public class ToDoController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
-        String taskType = taskTypesList.getValue();
         String taskName = taskNameTextField.getText();
         String selectedList = todaySideList.getSelectionModel().getSelectedItem().getName();
 
-        if (StringUtils.isInvalidText(taskName) || StringUtils.isInvalidText(taskType)) {
+        if (StringUtils.isInvalidText(taskName)) {
             alert.setContentText("Task name or type can not be empty.");
             alert.showAndWait();
 
@@ -159,7 +158,7 @@ public class ToDoController {
             alert.showAndWait();
 
         } else {
-            ToDoTask newTask = new ToDoTask(taskName, taskType);
+            ToDoTask newTask = new ToDoTask(taskName, null);
             ObservableList<ToDoTask> observableTempList = dataManager.updateTaskList(selectedList, newTask);
             tableView.setItems(observableTempList);
             addTaskPanel.setVisible(false);
