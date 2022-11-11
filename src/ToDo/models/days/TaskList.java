@@ -30,7 +30,7 @@ public class TaskList {
     }
 
     public boolean contains(String taskName) {
-        return tasks.containsKey(taskName);
+        return tasks.containsKey(taskName.toLowerCase());
     }
 
     public String getName() {
@@ -49,6 +49,6 @@ public class TaskList {
     }
 
     public void remove(String selectTaskName) {
-        this.tasks.remove(selectTaskName);
+        this.tasks.remove(selectTaskName.toLowerCase());
     }
 }
