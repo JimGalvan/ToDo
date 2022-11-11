@@ -14,6 +14,6 @@ App that allows you to create a lists of to-do tasks. This app is made using Jav
 
 # Features and improvements in progress
 - Use of Hibernate and Derby DB for data persistance. 
-- Multiple list of tasks instead of a single place for all. 
+- More icons and label functionality. 
 
 ## NOTE: To see incomplete updates progress, go to brach: 2022Updates
