@@ -118,7 +118,7 @@
                               <Font size="32.0" />
                            </font>
                         </TextField>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Task" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="New Task" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                            <font>
                               <Font size="20.0" />
                            </font></Text>
