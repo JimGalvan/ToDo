@@ -1,4 +1,4 @@
-package ToDo.models.days;
+package ToDo.models.tasklist;
 
 public enum DayType {
     TODAY,

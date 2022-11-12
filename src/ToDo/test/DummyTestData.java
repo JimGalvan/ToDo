@@ -1,7 +1,7 @@
 package ToDo.test;
 
-import ToDo.models.days.DayContainer;
-import ToDo.models.days.TaskList;
+import ToDo.models.tasklist.DayContainer;
+import ToDo.models.tasklist.TaskList;
 import ToDo.models.tasks.ToDoTask;
 
 /**

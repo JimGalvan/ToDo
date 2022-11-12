@@ -1,4 +1,4 @@
-package ToDo.models.days;
+package ToDo.models.tasklist;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

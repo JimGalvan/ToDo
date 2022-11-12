@@ -1,4 +1,9 @@
 {
   "DAY_TYPE": "TODAY",
-  "dayTaskListCollection": {}
+  "dayTaskListCollection": {
+    "IMPORTANT": {
+      "name": "IMPORTANT",
+      "tasks": {}
+    }
+  }
 }

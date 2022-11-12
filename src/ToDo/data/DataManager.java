@@ -1,7 +1,7 @@
 package ToDo.data;
 
-import ToDo.models.days.DayContainer;
-import ToDo.models.days.TaskList;
+import ToDo.models.tasklist.DayContainer;
+import ToDo.models.tasklist.TaskList;
 import ToDo.models.tasks.ToDoTask;
 import ToDo.utils.StringUtils;
 import com.google.gson.Gson;
