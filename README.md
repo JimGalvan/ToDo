@@ -1,8 +1,12 @@
 # ToDo-app
 App that allows you to create a lists of to-do tasks. This app is made using Java, Gson, JsonFX, and JavaFX.<br>
 
-![beta todo](https://user-images.githubusercontent.com/58128571/201324902-fb447a6c-f792-45ae-baa5-207bcf2dde65.png)
+![todo](https://user-images.githubusercontent.com/58128571/201448951-59f5549a-3f39-4abc-8d69-78d3adf7702b.png)
 
+## Updates
+- Added functionality to have a important tasks in the Important section.
+- Change UI to dark theme
+- Removed task type (will be replaced by labels)
 
 ## How to run ToDo app
 <br>
