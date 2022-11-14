@@ -1,6 +1,8 @@
 package ToDo.controllers;
 
 
+import ToDo.components.SnackBar;
+import ToDo.components.SnackBarExecutor;
 import ToDo.data.DataManager;
 import ToDo.models.tasklist.TaskList;
 import ToDo.models.tasklist.TaskListType;
@@ -22,9 +24,6 @@ import javafx.scene.layout.VBox;
 import java.util.Optional;
 
 public class ToDoController {
-
-    private DataManager dataManager;
-
     @FXML
     private VBox gridPane;
 
@@ -60,68 +59,86 @@ public class ToDoController {
 
     @FXML
     private ImageView addListButton;
-
     @FXML
     private Button markImportantButton;
-
     @FXML
     private ListView<TaskList> listViewPanel;
+    @FXML
+    private GridPane snackBar;
 
+    private DataManager dataManager = new DataManager();
     private final Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
     private final Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+    private final ButtonType buttonYes = new ButtonType("Yes");
+    private final ButtonType buttonNo = new ButtonType("No");
+    private final static String IMPORTANT_LIST_NAME = TaskListType.IMPORTANT.name();
+    SnackBarExecutor snackBarExecutor = new SnackBarExecutor();
 
     public void initialize() {
-        dataManager = new DataManager();
         dataManager.loadJsonData(listViewPanel);
+
+        // setup UI
         addTaskPanel.setVisible(false);
+        snackBar.setVisible(false);
+        confirmationAlert.getButtonTypes().setAll(buttonYes, buttonNo);
 
         // Set up the columns in the table
         taskColumn.setCellValueFactory(new PropertyValueFactory<>("taskName"));
         dataManager.saveUpdates();
-
-        // temp solution to hide important list
-        hideImportantList(listViewPanel);
     }
 
     @FXML
     void showImportantList(MouseEvent event) {
-        ObservableList<ToDoTask> importantList = dataManager.getObservableList(TaskListType.IMPORTANT.name());
+        ObservableList<ToDoTask> importantList = dataManager.getObservableList(IMPORTANT_LIST_NAME);
         tableView.setItems(importantList);
     }
 
     @FXML
     void markImportant(ActionEvent event) {
-        String selectedTaskName;
-        String selectedList = String.valueOf(TaskListType.IMPORTANT);
+        if (isItemSelected(tableView)) {
+            String selectedTaskName = tableView.getSelectionModel().getSelectedItem().getName();
 
-        try {
-            selectedTaskName = tableView.getSelectionModel().getSelectedItem().getName();
-        } catch (Exception e) {
-            informationAlert.setContentText("Select a list and a task to delete");
+            if (!dataManager.isTaskInTheList(IMPORTANT_LIST_NAME, selectedTaskName)) {
+                dataManager.updateTaskList(IMPORTANT_LIST_NAME, new ToDoTask(selectedTaskName, null));
+
+                SnackBar tempSnackBar = new SnackBar(snackBar);
+                snackBarExecutor.start(tempSnackBar);
+            } else {
+                informationAlert.setContentText("Task is on important list already");
+                informationAlert.showAndWait();
+            }
+        } else {
+            informationAlert.setContentText("Select a task first");
             informationAlert.showAndWait();
-            return;
         }
-
-        if (StringUtils.isInvalidText(selectedList)) {
-            informationAlert.setContentText("List name can't be empty");
-            informationAlert.showAndWait();
-            return;
-        }
-
-        dataManager.updateTaskList(selectedList, new ToDoTask(selectedTaskName, null));
     }
 
     @FXML
     void deleteList(MouseEvent event) {
-        TaskList selectedList = listViewPanel.getSelectionModel().getSelectedItem();
-        if (selectedList != null && dataManager.isTaskListPresent(selectedList)) {
-            ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
-            listViewPanel.setItems(tempList);
-            hideImportantList(listViewPanel);
-        }
+        if (isItemSelected(listViewPanel)) {
+            TaskList selectedList = listViewPanel.getSelectionModel().getSelectedItem();
+            confirmationAlert.setContentText("Are you sure you want to delete this list?");
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
 
-        if (listViewPanel.getItems().size() == 0) {
-            tableView.getItems().clear();
+            if (result.isPresent() && result.get().equals(buttonYes)) {
+
+                if (!selectedList.getName().equals(IMPORTANT_LIST_NAME)) {
+                    if (dataManager.isTaskListPresent(selectedList)) {
+                        ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
+                        listViewPanel.setItems(tempList);
+                    }
+
+                    if (listViewPanel.getItems().size() == 0) {
+                        tableView.getItems().clear();
+                    }
+                } else {
+                    informationAlert.setContentText("You can't delete Important list");
+                    informationAlert.showAndWait();
+                }
+            }
+        } else {
+            informationAlert.setContentText("Select a list first");
+            informationAlert.showAndWait();
         }
     }
 
@@ -137,7 +154,7 @@ public class ToDoController {
 
         String taskListName = newListDialog.getEditor().getText();
 
-        if (taskListName.toLowerCase().equals(TaskListType.IMPORTANT.name().toLowerCase())) {
+        if (taskListName.equalsIgnoreCase(IMPORTANT_LIST_NAME)) {
             informationAlert.setContentText("Can't use the given name");
             informationAlert.showAndWait();
             return;
@@ -152,7 +169,6 @@ public class ToDoController {
 
         ObservableList<TaskList> newList = dataManager.addTaskList(taskListName);
         listViewPanel.setItems(newList);
-        hideImportantList(listViewPanel);
     }
 
     /**
@@ -174,9 +190,7 @@ public class ToDoController {
      */
     @FXML
     void saveTask(ActionEvent event) {
-
         informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-
         String taskName = taskNameTextField.getText();
         String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
 
@@ -199,32 +213,19 @@ public class ToDoController {
 
     @FXML
     void removeTask(ActionEvent event) {
-        String selectTaskName = null;
-        String selectedList = null;
+        if (isItemSelected(tableView)) {
+            confirmationAlert.setContentText("Are you sure you want to delete this task?");
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
 
-        if (isImportantListInUse()) {
-            selectedList = TaskListType.IMPORTANT.name();
-        } else {
-            try {
-                selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
-            } catch (Exception e) {
-                informationAlert.showAndWait();
-                return;
+            if (result.isPresent() && result.get().equals(buttonYes)) {
+                String selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
+                String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
+
+                ObservableList<ToDoTask> observableListTemp = dataManager.removeTaskFromList(selectedList, selectTaskName);
+                tableView.setItems(observableListTemp);
             }
-        }
-
-        try {
-            selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
-        } catch (Exception e) {
-            informationAlert.showAndWait();
-            return;
-        }
-
-        //-1 means there is no items in tableView
-        if (!StringUtils.isInvalidText(selectTaskName) && !StringUtils.isInvalidText(selectedList)) {
-            ObservableList<ToDoTask> observableListTemp = dataManager.removeTaskFromList(selectedList, selectTaskName);
-            tableView.setItems(observableListTemp);
         } else {
+            informationAlert.setContentText("Select a task first");
             informationAlert.showAndWait();
         }
     }
@@ -235,7 +236,7 @@ public class ToDoController {
     }
 
     @FXML
-    void clickTask(MouseEvent event) {
+    void clickList(MouseEvent event) {
         Node selectedList = event.getPickResult().getIntersectedNode();
         if (selectedList == null) return;
         String listName;
@@ -253,12 +254,13 @@ public class ToDoController {
         tableView.setItems(listTasks);
     }
 
-    private boolean isImportantListInUse() {
-        ObservableList<ToDoTask> importantList = dataManager.getObservableList(TaskListType.IMPORTANT.name());
-        return (importantList.size() > 0);
+    private boolean isItemSelected(TableView<ToDoTask> collectionOfItems) {
+        Object selectedItem = collectionOfItems.getSelectionModel().getSelectedItem();
+        return selectedItem != null;
     }
 
-    private void hideImportantList(ListView<TaskList> listViewPanel) {
-        listViewPanel.getItems().removeIf(taskList -> taskList.getName().equalsIgnoreCase("important"));
+    private boolean isItemSelected(ListView<TaskList> collectionOfItems) {
+        Object selectedItem = collectionOfItems.getSelectionModel().getSelectedItem();
+        return selectedItem != null;
     }
 }

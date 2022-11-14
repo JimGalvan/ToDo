@@ -3,12 +3,7 @@
   "dayTaskListCollection": {
     "IMPORTANT": {
       "name": "IMPORTANT",
-      "tasks": {
-        "fdgfdgfd": {
-          "taskName": "fdgfdgfd",
-          "taskTime": null
-        }
-      }
+      "tasks": {}
     }
   }
 }
