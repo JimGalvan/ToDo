@@ -56,18 +56,6 @@ public class ToDoController {
     private Button cancelButton;
 
     @FXML
-    private ChoiceBox<String> taskTypesList;
-
-    @FXML
-    private TitledPane dayAccordion;
-
-    @FXML
-    private ListView<TaskList> todaySideList;
-
-    @FXML
-    private ListView<?> tomorrowList;
-
-    @FXML
     private ImageView deleteListButton;
 
     @FXML
@@ -76,9 +64,15 @@ public class ToDoController {
     @FXML
     private Button markImportantButton;
 
+    @FXML
+    private ListView<TaskList> listViewPanel;
+
+    private final Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    private final Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+
     public void initialize() {
         dataManager = new DataManager();
-        dataManager.loadJsonData(todaySideList);
+        dataManager.loadJsonData(listViewPanel);
         addTaskPanel.setVisible(false);
 
         // Set up the columns in the table
@@ -86,7 +80,7 @@ public class ToDoController {
         dataManager.saveUpdates();
 
         // temp solution to hide important list
-        hideImportantList(todaySideList);
+        hideImportantList(listViewPanel);
     }
 
     @FXML
@@ -97,22 +91,20 @@ public class ToDoController {
 
     @FXML
     void markImportant(ActionEvent event) {
-
         String selectedTaskName;
         String selectedList = String.valueOf(TaskListType.IMPORTANT);
 
         try {
             selectedTaskName = tableView.getSelectionModel().getSelectedItem().getName();
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a list and a task to delete");
-            alert.showAndWait();
+            informationAlert.setContentText("Select a list and a task to delete");
+            informationAlert.showAndWait();
             return;
         }
 
         if (StringUtils.isInvalidText(selectedList)) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "List name can't be empty");
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            alert.showAndWait();
+            informationAlert.setContentText("List name can't be empty");
+            informationAlert.showAndWait();
             return;
         }
 
@@ -121,14 +113,14 @@ public class ToDoController {
 
     @FXML
     void deleteList(MouseEvent event) {
-        TaskList selectedList = todaySideList.getSelectionModel().getSelectedItem();
+        TaskList selectedList = listViewPanel.getSelectionModel().getSelectedItem();
         if (selectedList != null && dataManager.isTaskListPresent(selectedList)) {
             ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
-            todaySideList.setItems(tempList);
-            hideImportantList(todaySideList);
+            listViewPanel.setItems(tempList);
+            hideImportantList(listViewPanel);
         }
 
-        if (todaySideList.getItems().size() == 0) {
+        if (listViewPanel.getItems().size() == 0) {
             tableView.getItems().clear();
         }
     }
@@ -138,7 +130,6 @@ public class ToDoController {
         TextInputDialog newListDialog = new TextInputDialog();
         newListDialog.setHeaderText("Enter list name");
         Optional<String> userSelection = newListDialog.showAndWait();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
         if (userSelection.equals(Optional.empty())) {
             return;
@@ -147,20 +138,21 @@ public class ToDoController {
         String taskListName = newListDialog.getEditor().getText();
 
         if (taskListName.toLowerCase().equals(TaskListType.IMPORTANT.name().toLowerCase())) {
-            alert.setContentText("Can't use the given name");
+            informationAlert.setContentText("Can't use the given name");
+            informationAlert.showAndWait();
             return;
         }
 
         if (StringUtils.isInvalidText(taskListName)) {
-            alert.setContentText("List name can't be empty");
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            alert.showAndWait();
+            informationAlert.setContentText("List name can't be empty");
+            informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            informationAlert.showAndWait();
             return;
         }
 
         ObservableList<TaskList> newList = dataManager.addTaskList(taskListName);
-        todaySideList.setItems(newList);
-        hideImportantList(todaySideList);
+        listViewPanel.setItems(newList);
+        hideImportantList(listViewPanel);
     }
 
     /**
@@ -168,10 +160,10 @@ public class ToDoController {
      */
     @FXML
     void addTask(ActionEvent event) {
-        int selectedIndex = todaySideList.getSelectionModel().getSelectedIndex();
+        int selectedIndex = listViewPanel.getSelectionModel().getSelectedIndex();
         if (selectedIndex == -1) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a list to add a task.");
-            alert.showAndWait();
+            informationAlert.setContentText("Select a list to add a task.");
+            informationAlert.showAndWait();
             return;
         }
         addTaskPanel.setVisible(true);
@@ -182,19 +174,19 @@ public class ToDoController {
      */
     @FXML
     void saveTask(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+        informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         String taskName = taskNameTextField.getText();
-        String selectedList = todaySideList.getSelectionModel().getSelectedItem().getName();
+        String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
 
         if (StringUtils.isInvalidText(taskName)) {
-            alert.setContentText("Task name or type can not be empty.");
-            alert.showAndWait();
+            informationAlert.setContentText("Task name or type can not be empty.");
+            informationAlert.showAndWait();
 
         } else if (dataManager.isTaskInTheList(selectedList, taskName)) {
-            alert.setContentText("Task name is already is already taken. Please select another name.");
-            alert.showAndWait();
+            informationAlert.setContentText("Task name is already is already taken. Please select another name.");
+            informationAlert.showAndWait();
 
         } else {
             ToDoTask newTask = new ToDoTask(taskName, null);
@@ -209,15 +201,14 @@ public class ToDoController {
     void removeTask(ActionEvent event) {
         String selectTaskName = null;
         String selectedList = null;
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select a list and a task to delete");
 
         if (isImportantListInUse()) {
             selectedList = TaskListType.IMPORTANT.name();
         } else {
             try {
-                selectedList = todaySideList.getSelectionModel().getSelectedItem().getName();
+                selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
             } catch (Exception e) {
-                alert.showAndWait();
+                informationAlert.showAndWait();
                 return;
             }
         }
@@ -225,7 +216,7 @@ public class ToDoController {
         try {
             selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
         } catch (Exception e) {
-            alert.showAndWait();
+            informationAlert.showAndWait();
             return;
         }
 
@@ -234,7 +225,7 @@ public class ToDoController {
             ObservableList<ToDoTask> observableListTemp = dataManager.removeTaskFromList(selectedList, selectTaskName);
             tableView.setItems(observableListTemp);
         } else {
-            alert.showAndWait();
+            informationAlert.showAndWait();
         }
     }
 
@@ -267,7 +258,7 @@ public class ToDoController {
         return (importantList.size() > 0);
     }
 
-    private void hideImportantList(ListView<TaskList> todaySideList) {
-        todaySideList.getItems().removeIf(taskList -> taskList.getName().equalsIgnoreCase("important"));
+    private void hideImportantList(ListView<TaskList> listViewPanel) {
+        listViewPanel.getItems().removeIf(taskList -> taskList.getName().equalsIgnoreCase("important"));
     }
 }

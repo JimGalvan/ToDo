@@ -4,6 +4,8 @@
     -fx-base: #373e43;
     -fx-control-inner-background: derive(-fx-base, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .label{
@@ -68,4 +70,9 @@
 .table-row-cell{
     -fx-border-color: transparent;
     -fx-table-cell-border-color:transparent;
+}
+
+.list-cell:filled:selected {
+  -fx-background-color: -fx-background ;
+  -fx-background-insets: 0 ;
 }

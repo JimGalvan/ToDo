@@ -8,8 +8,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="com.google.code.gson:gson:2.8.6" level="project" />
-    <orderEntry type="library" name="com.jfoenix:jfoenix:9.0.9" level="project" />
-    <orderEntry type="library" name="org.hildan.fxgson:fx-gson:3.1.2" level="project" />
+    <orderEntry type="library" name="jfoenix" level="project" />
+    <orderEntry type="library" name="google.code.gson" level="project" />
+    <orderEntry type="library" name="hildan.fxgson.fx.gson" level="project" />
   </component>
 </module>
