@@ -3,10 +3,11 @@ App that allows you to create a lists of to-do tasks. This app is made using Jav
 
 ![todo](https://user-images.githubusercontent.com/58128571/201448951-59f5549a-3f39-4abc-8d69-78d3adf7702b.png)
 
-## Updates
-- Added functionality to have a important tasks in the Important section.
-- Change UI to dark theme
-- Removed task type (will be replaced by labels)
+## Updates (11/14)
+- Added dialog to confirm actions like deleting before applying.
+- Refactor folders, ToDoController and libraries
+- Added SnackBar to confirm addition to Important list. 
+- Fix bugs related to deleting tasks and refreshing the task table. 
 
 ## How to run ToDo app
 <br>
