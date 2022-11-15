@@ -21,5 +21,6 @@ App that allows you to create a lists of to-do tasks. This app is made using Jav
 - Use of Hibernate and Derby DB for better data storing and handling. (This will replace the JSON file to store data) 
 - More icons and label functionality. 
 - Data binding pattern to allow for a MVVM design which will improve app design.  
+- log4j2 Logger for better debugging.
 
 ## NOTE: To see incomplete updates progress, go to brach: 2022Updates
