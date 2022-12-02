@@ -22,10 +22,12 @@ public class SnackBar extends Task<Object> {
         Thread.sleep(1000);
 
         int seconds = 3;
-        double decreaseRate = 0.25;
+        int millSecondsWaitPerFrame = 25;
+        int frames = 36;
+        double decreaseRate = 0.10;
 
-        for (int i = 0; i < seconds * 6; i++) {
-            Thread.sleep(200 / 2);
+        for (int i = 0; i < seconds * frames; i++) {
+            Thread.sleep(millSecondsWaitPerFrame);
             double currentOpacity = snackBar.getOpacity();
             snackBar.setOpacity(currentOpacity - decreaseRate);
         }
