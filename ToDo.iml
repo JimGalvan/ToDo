@@ -13,5 +13,6 @@
     <orderEntry type="library" name="hildan.fxgson.fx.gson" level="project" />
     <orderEntry type="library" name="gson-2.8.6" level="project" />
     <orderEntry type="library" name="fx-gson-3.1.2" level="project" />
+    <orderEntry type="library" name="sqlite-jdbc-3.40.0.0" level="project" />
   </component>
 </module>

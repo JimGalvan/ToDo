@@ -4,24 +4,21 @@ package ToDo.controllers;
 import ToDo.components.SnackBar;
 import ToDo.components.SnackBarExecutor;
 import ToDo.data.DataManager;
+import ToDo.data.DataQueries;
+import ToDo.models.TodoList;
 import ToDo.models.tasklist.TaskList;
 import ToDo.models.tasklist.TaskListType;
 import ToDo.models.tasks.ToDoTask;
-import ToDo.utils.NodeUtils;
-import ToDo.utils.StringUtils;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-
-import java.util.Optional;
 
 public class ToDoController {
     @FXML
@@ -62,20 +59,25 @@ public class ToDoController {
     @FXML
     private Button markImportantButton;
     @FXML
-    private ListView<TaskList> listViewPanel;
+    private ListView<TodoList> listView;
     @FXML
     private GridPane snackBar;
 
-    private DataManager dataManager = new DataManager();
+    private ObservableList<TodoList> todoLists;
+    private final DataManager dataManager = new DataManager();
     private final Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
     private final Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
     private final ButtonType buttonYes = new ButtonType("Yes");
     private final ButtonType buttonNo = new ButtonType("No");
+    private final SnackBarExecutor snackBarExecutor = new SnackBarExecutor();
+    private final DataQueries dataQueries = new DataQueries();
     private final static String IMPORTANT_LIST_NAME = TaskListType.IMPORTANT.name();
-    SnackBarExecutor snackBarExecutor = new SnackBarExecutor();
 
     public void initialize() {
-        dataManager.loadJsonData(listViewPanel);
+        todoLists = FXCollections.observableArrayList(dataQueries.getTodoLists());
+        listView.setItems(todoLists);
+
+//        dataManager.loadJsonData(listView);
 
         // setup UI
         addTaskPanel.setVisible(false);
@@ -115,60 +117,66 @@ public class ToDoController {
 
     @FXML
     void deleteList(MouseEvent event) {
-        if (isItemSelected(listViewPanel)) {
-            TaskList selectedList = listViewPanel.getSelectionModel().getSelectedItem();
-            confirmationAlert.setContentText("Are you sure you want to delete this list?");
-            Optional<ButtonType> result = confirmationAlert.showAndWait();
-
-            if (result.isPresent() && result.get().equals(buttonYes)) {
-
-                if (!selectedList.getName().equals(IMPORTANT_LIST_NAME)) {
-                    if (dataManager.isTaskListPresent(selectedList)) {
-                        ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
-                        listViewPanel.setItems(tempList);
-                    }
-
-                    if (listViewPanel.getItems().size() == 0) {
-                        tableView.getItems().clear();
-                    }
-                } else {
-                    informationAlert.setContentText("You can't delete Important list");
-                    informationAlert.showAndWait();
-                }
-            }
-        } else {
-            informationAlert.setContentText("Select a list first");
-            informationAlert.showAndWait();
-        }
+//        if (isItemSelected(listViewPanel)) {
+////            TaskList selectedList = listViewPanel.getSelectionModel().getSelectedItem();
+//            confirmationAlert.setContentText("Are you sure you want to delete this list?");
+//            Optional<ButtonType> result = confirmationAlert.showAndWait();
+//
+//            if (result.isPresent() && result.get().equals(buttonYes)) {
+//
+//                if (!selectedList.getName().equals(IMPORTANT_LIST_NAME)) {
+//                    if (dataManager.isTaskListPresent(selectedList)) {
+//                        ObservableList<TaskList> tempList = dataManager.removeTaskList(selectedList.getName());
+//                        listViewPanel.setItems(tempList);
+//                    }
+//
+//                    if (listViewPanel.getItems().size() == 0) {
+//                        tableView.getItems().clear();
+//                    }
+//                } else {
+//                    informationAlert.setContentText("You can't delete Important list");
+//                    informationAlert.showAndWait();
+//                }
+//            }
+//        } else {
+//            informationAlert.setContentText("Select a list first");
+//            informationAlert.showAndWait();
+//        }
     }
 
     @FXML
     void addList(MouseEvent event) {
-        TextInputDialog newListDialog = new TextInputDialog();
-        newListDialog.setHeaderText("Enter list name");
-        Optional<String> userSelection = newListDialog.showAndWait();
+        dataQueries.addTodoList("Test 1");
+        loadData();
+//        TextInputDialog newListDialog = new TextInputDialog();
+//        newListDialog.setHeaderText("Enter list name");
+//        Optional<String> userSelection = newListDialog.showAndWait();
+//
+//        if (userSelection.equals(Optional.empty())) {
+//            return;
+//        }
+//
+//        String taskListName = newListDialog.getEditor().getText();
+//
+//        if (taskListName.equalsIgnoreCase(IMPORTANT_LIST_NAME)) {
+//            informationAlert.setContentText("Can't use the given name");
+//            informationAlert.showAndWait();
+//            return;
+//        }
+//
+//        if (StringUtils.isInvalidText(taskListName)) {
+//            informationAlert.setContentText("List name can't be empty");
+//            informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+//            informationAlert.showAndWait();
+//            return;
+//        }
+//
+//        ObservableList<TaskList> newList = dataManager.addTaskList(taskListName);
+//        listViewPanel.setItems(newList);
+    }
 
-        if (userSelection.equals(Optional.empty())) {
-            return;
-        }
-
-        String taskListName = newListDialog.getEditor().getText();
-
-        if (taskListName.equalsIgnoreCase(IMPORTANT_LIST_NAME)) {
-            informationAlert.setContentText("Can't use the given name");
-            informationAlert.showAndWait();
-            return;
-        }
-
-        if (StringUtils.isInvalidText(taskListName)) {
-            informationAlert.setContentText("List name can't be empty");
-            informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            informationAlert.showAndWait();
-            return;
-        }
-
-        ObservableList<TaskList> newList = dataManager.addTaskList(taskListName);
-        listViewPanel.setItems(newList);
+    private void loadData() {
+        todoLists.setAll(dataQueries.getTodoLists());
     }
 
     /**
@@ -176,7 +184,7 @@ public class ToDoController {
      */
     @FXML
     void addTask(ActionEvent event) {
-        int selectedIndex = listViewPanel.getSelectionModel().getSelectedIndex();
+        int selectedIndex = listView.getSelectionModel().getSelectedIndex();
         if (selectedIndex == -1) {
             informationAlert.setContentText("Select a list to add a task.");
             informationAlert.showAndWait();
@@ -190,44 +198,44 @@ public class ToDoController {
      */
     @FXML
     void saveTask(ActionEvent event) {
-        informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        String taskName = taskNameTextField.getText();
-        String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
-
-        if (StringUtils.isInvalidText(taskName)) {
-            informationAlert.setContentText("Task name or type can not be empty.");
-            informationAlert.showAndWait();
-
-        } else if (dataManager.isTaskInTheList(selectedList, taskName)) {
-            informationAlert.setContentText("Task name is already is already taken. Please select another name.");
-            informationAlert.showAndWait();
-
-        } else {
-            ToDoTask newTask = new ToDoTask(taskName, null);
-            ObservableList<ToDoTask> observableTempList = dataManager.updateTaskList(selectedList, newTask);
-            tableView.setItems(observableTempList);
-            addTaskPanel.setVisible(false);
-            taskNameTextField.clear();
-        }
+//        informationAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+//        String taskName = taskNameTextField.getText();
+//        String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
+//
+//        if (StringUtils.isInvalidText(taskName)) {
+//            informationAlert.setContentText("Task name or type can not be empty.");
+//            informationAlert.showAndWait();
+//
+//        } else if (dataManager.isTaskInTheList(selectedList, taskName)) {
+//            informationAlert.setContentText("Task name is already is already taken. Please select another name.");
+//            informationAlert.showAndWait();
+//
+//        } else {
+//            ToDoTask newTask = new ToDoTask(taskName, null);
+//            ObservableList<ToDoTask> observableTempList = dataManager.updateTaskList(selectedList, newTask);
+//            tableView.setItems(observableTempList);
+//            addTaskPanel.setVisible(false);
+//            taskNameTextField.clear();
+//        }
     }
 
     @FXML
     void removeTask(ActionEvent event) {
-        if (isItemSelected(tableView)) {
-            confirmationAlert.setContentText("Are you sure you want to delete this task?");
-            Optional<ButtonType> result = confirmationAlert.showAndWait();
-
-            if (result.isPresent() && result.get().equals(buttonYes)) {
-                String selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
-                String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
-
-                ObservableList<ToDoTask> observableListTemp = dataManager.removeTaskFromList(selectedList, selectTaskName);
-                tableView.setItems(observableListTemp);
-            }
-        } else {
-            informationAlert.setContentText("Select a task first");
-            informationAlert.showAndWait();
-        }
+//        if (isItemSelected(tableView)) {
+//            confirmationAlert.setContentText("Are you sure you want to delete this task?");
+//            Optional<ButtonType> result = confirmationAlert.showAndWait();
+//
+//            if (result.isPresent() && result.get().equals(buttonYes)) {
+//                String selectTaskName = tableView.getSelectionModel().getSelectedItem().getName();
+//                String selectedList = listViewPanel.getSelectionModel().getSelectedItem().getName();
+//
+//                ObservableList<ToDoTask> observableListTemp = dataManager.removeTaskFromList(selectedList, selectTaskName);
+//                tableView.setItems(observableListTemp);
+//            }
+//        } else {
+//            informationAlert.setContentText("Select a task first");
+//            informationAlert.showAndWait();
+//        }
     }
 
     @FXML
@@ -237,21 +245,21 @@ public class ToDoController {
 
     @FXML
     void clickList(MouseEvent event) {
-        Node selectedList = event.getPickResult().getIntersectedNode();
-        if (selectedList == null) return;
-        String listName;
-
-        try {
-            listName = NodeUtils.getNodeText(selectedList);
-        } catch (ClassCastException e) {
-            return;
-        }
-
-        if (StringUtils.isInvalidText(listName)) return;
-
-        // select list based on name
-        ObservableList<ToDoTask> listTasks = dataManager.getObservableList(listName);
-        tableView.setItems(listTasks);
+//        Node selectedList = event.getPickResult().getIntersectedNode();
+//        if (selectedList == null) return;
+//        String listName;
+//
+//        try {
+//            listName = NodeUtils.getNodeText(selectedList);
+//        } catch (ClassCastException e) {
+//            return;
+//        }
+//
+//        if (StringUtils.isInvalidText(listName)) return;
+//
+//        // select list based on name
+//        ObservableList<ToDoTask> listTasks = dataManager.getObservableList(listName);
+//        tableView.setItems(listTasks);
     }
 
     private boolean isItemSelected(TableView<ToDoTask> collectionOfItems) {

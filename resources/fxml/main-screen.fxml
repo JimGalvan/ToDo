@@ -182,7 +182,7 @@
                 <RowConstraints maxHeight="728.0" minHeight="10.0" prefHeight="692.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ListView fx:id="listViewPanel" editable="true" fixedCellSize="40.0" onMouseClicked="#clickList" prefHeight="655.0" prefWidth="333.0" GridPane.rowIndex="1">
+                  <ListView fx:id="listView" editable="true" fixedCellSize="40.0" onMouseClicked="#clickList" prefHeight="655.0" prefWidth="333.0" GridPane.rowIndex="1">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
