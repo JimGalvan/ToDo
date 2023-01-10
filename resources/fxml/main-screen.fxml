@@ -82,7 +82,7 @@
                         <Font size="17.0" />
                      </font>
                   </Button>
-                  <Button fx:id="markImportantButton" mnemonicParsing="false" onAction="#markImportant" prefHeight="38.0" prefWidth="181.0" text="Mark as important" GridPane.columnIndex="3">
+                  <Button fx:id="markImportantButton" disable="true" mnemonicParsing="false" onAction="#markImportant" prefHeight="38.0" prefWidth="181.0" text="Mark as important" GridPane.columnIndex="3">
                      <font>
                         <Font size="17.0" />
                      </font>
@@ -164,7 +164,7 @@
                         <RowConstraints maxHeight="48.33331298828125" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Text disable="true" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Task added to important" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                        <Text fx:id="snackBar_text" disable="true" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="List deleted" GridPane.halignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                            <font>
                               <Font size="20.0" />
                            </font>

@@ -4,13 +4,17 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class SnackBar extends Task<Object> {
 
     @FXML
     private final GridPane snackBar;
+    private String message = null;
+
+    // TODO finish custom messages
+    public SnackBar(String message, GridPane snackBar) {
+        this.message = message;
+        this.snackBar = snackBar;
+    }
 
     public SnackBar(GridPane snackBar) {
         this.snackBar = snackBar;
@@ -18,6 +22,10 @@ public class SnackBar extends Task<Object> {
 
     @Override
     protected Integer call() throws Exception {
+
+//        TextField textField = (TextField) snackBar.getChildren().get(0);
+//        textField.setText(message);
+
         snackBar.setVisible(true);
         Thread.sleep(1000);
 

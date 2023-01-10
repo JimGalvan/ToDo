@@ -30,6 +30,7 @@ public class DataQueries {
     private PreparedStatement readTodoTaskQuery;
     private PreparedStatement updateTodoTaskQuery;
     private PreparedStatement deleteTodoTaskQuery;
+    private PreparedStatement getTodoTasksFromListQuery;
 
     public DataQueries() {
 
@@ -54,6 +55,7 @@ public class DataQueries {
             readTodoTaskQuery = connection.prepareStatement("SELECT * FROM Tasks WHERE task_id = ?");
             updateTodoTaskQuery = connection.prepareStatement("UPDATE Tasks SET description = ? WHERE task_id = ?;");
             deleteTodoTaskQuery = connection.prepareStatement("DELETE FROM Tasks WHERE task_id = ?");
+            getTodoTasksFromListQuery = connection.prepareStatement("SELECT * FROM Tasks WHERE list_id = ?");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,7 +115,7 @@ public class DataQueries {
         }
     }
 
-    public List<TodoTask> readTodoTasks() {
+    public List<TodoTask> getAllTodoTasks() {
         List<TodoTask> todoTasks = new ArrayList<>();
 
         try (ResultSet resultSet = readAllTodoTasksQuery.executeQuery()) {
@@ -131,6 +133,32 @@ public class DataQueries {
         }
         return todoTasks;
     }
+
+    public List<TodoTask> getTodoTasksFromList(int todoListId) {
+        List<TodoTask> todoTasks = new ArrayList<>();
+
+        try {
+            getTodoTasksFromListQuery.setInt(1, todoListId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try (ResultSet resultSet = getTodoTasksFromListQuery.executeQuery()) {
+
+            while (resultSet.next()) {
+                int taskId = resultSet.getInt("task_id");
+                int listId = resultSet.getInt("list_id");
+                String description = resultSet.getString("description");
+                TodoTask todoTask = new TodoTask(taskId, listId, description);
+                todoTasks.add(todoTask);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return todoTasks;
+    }
+
 
     public List<TodoList> getTodoLists() {
         List<TodoList> todoLists = new ArrayList<>();
