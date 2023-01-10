@@ -6,7 +6,7 @@ This app shows how to use the MVC pattern along with SQLite for data persistence
 ![todo](https://user-images.githubusercontent.com/58128571/201448951-59f5549a-3f39-4abc-8d69-78d3adf7702b.png)
 
 ## Updates (1/10)
-- Added an SQLite database to handle all the data in the app.
+- Added an SQLite database to handle all the data in the app faster.
 - Removed Gson dependencies. 
 - Temporally disabled Mark as important button
 
